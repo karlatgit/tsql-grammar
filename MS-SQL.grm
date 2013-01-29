@@ -17,14 +17,8 @@
 
 ! CLR UDTs are missing, but may be implemented later
 
-"Version" = '2013-01-15 - modified by Karl Spaelti'
+"Version" = '2013-01-29 - modified by Karl Spaelti'
           
-!!! Not implemented:
-!!! COMPUTE BY
-!!! NOLOCK
-
-!!! Implemented poorly:
-!!! <CursorUpdate>
 
 ! =============================================================================
 ! Comments
@@ -1227,22 +1221,22 @@ _ACTION = '$ACTION'
 
 <SelectStatement> ::= <QueryOptions> <SelectQuery> <QueryHint>
 
-<SelectQuery> ::= SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause>
-    | SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause>
-    | SELECT <Restriction> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause>
-    | SELECT <Restriction> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause>
-    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause>
-    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause>
-    | SELECT <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause>
-    | SELECT <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause>
-    | SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause>
-    | SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <ForClause>
-    | SELECT <Restriction> <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause>
-    | SELECT <Restriction> <ColumnItemList> <IntoClause> <WhereClause> <ForClause>
-    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause>
-    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <ForClause>
-    | SELECT <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause>
-    | SELECT <ColumnItemList> <IntoClause> <WhereClause> <ForClause>
+<SelectQuery> ::= SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
+    | SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
+    | SELECT <Restriction> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
+    | SELECT <Restriction> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
+    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
+    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
+    | SELECT <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
+    | SELECT <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
+    | SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
+    | SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
+    | SELECT <Restriction> <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
+    | SELECT <Restriction> <ColumnItemList> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
+    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
+    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
+    | SELECT <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
+    | SELECT <ColumnItemList> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
 
 <TopLegacy> ::= TOP IntegerLiteral <OptionalPercent>
     | <Top>
@@ -1329,6 +1323,20 @@ _ACTION = '$ACTION'
     |
 
 <TableHintGroup> ::= WITH '(' <TableHintList> ')'
+    | '(NOLOCK)'
+    | '(READUNCOMMITTED)'
+    | '(UPDLOCK)'
+    | '(REPEATABLEREAD)' 
+    | '(SERIALIZABLE)'
+    | '(READCOMMITTED)'
+    | '(TABLOCK)'
+    | '(TABLOCKX)'
+    | '(PAGLOCK)'
+    | '(ROWLOCK)'
+    | '(NOWAIT)'
+    | '(READPAST)'
+    | '(XLOCK)'
+    | '(NOEXPAND)'
     |
 
 <TableHintList> ::= <TableHint> ',' <TableHintList>
@@ -1337,6 +1345,21 @@ _ACTION = '$ACTION'
 <TableHint> ::= INDEX '(' <IndexValueList> ')'
     | HOLDLOCK
     | Id
+    | NOLOCK
+    | NOWAIT
+    | PAGLOCK 
+    | READCOMMITTED 
+    | READCOMMITTEDLOCK 
+    | READPAST 
+    | READUNCOMMITTED 
+    | REPEATABLEREAD 
+    | ROWLOCK 
+    | SERIALIZABLE 
+    | TABLOCK 
+    | TABLOCKX 
+    | UPDLOCK 
+    | XLOCK 
+    
 
 <IndexValueList> ::= IntegerLiteral ',' <IndexValueList>
     | IntegerLiteral
@@ -1364,6 +1387,10 @@ _ACTION = '$ACTION'
 <HavingClause> ::= HAVING <Predicate>
     |
 
+<ComputeClause> ::= COMPUTE <ColumnItemList>
+    | COMPUTE <ColumnItemList> BY <ColumnItemList>
+    |
+
 <RowsetCombineClause> ::= UNION <SelectQuery>
     | UNION ALL <SelectQuery>
     | EXCEPT <SelectQuery>
@@ -1374,6 +1401,7 @@ _ACTION = '$ACTION'
     | FOR XML RAW <OptionalElementName> <XmlDirectiveList>
     | FOR XML EXPLICIT <XmlDirectiveList>
     | FOR XML PATH <OptionalElementName> <XmlDirectiveList>
+    | FOR READ ONLY
     |
 
 <OptionalElementName> ::= '(' StringLiteral ')'
