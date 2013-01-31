@@ -17,8 +17,10 @@
 
 ! CLR UDTs are missing, but may be implemented later
 
-"Version" = '2013-01-29 - modified by Karl Spaelti'
-          
+"Version" = '2013-01-31 - modified by Karl Spaelti'
+ 
+!!! ALTER VIEW      added
+!!! ALTER FUNCTION  added         
 
 ! =============================================================================
 ! Comments
@@ -281,7 +283,6 @@ POPULATION = POPULATION
 PRIOR = PRIOR
 PROPERTY = PROPERTY
 RAW = RAW
-READ = READ
 READONLY = READONLY
 RECOMPILE = RECOMPILE
 RELATIVE = RELATIVE
@@ -473,10 +474,10 @@ _ACTION = '$ACTION'
 
 <Terminator> ::= ';'
 
-<FirstStatement> ::= <CreateFunctionStatement>
-    | <CreateProcedureStatement>  
+<FirstStatement> ::= <CreateOrAlterFunctionStatement>
+    | <CreateOrAlterProcedureStatement>  
     | <CreateTriggerStatement> 
-    | <CreateViewStatement> 
+    | <CreateOrAlterViewStatement> 
 
     | <GrantStatement>             
 
@@ -796,7 +797,7 @@ _ACTION = '$ACTION'
 
 ! We don't allow to specify the schema name, it is implicit (module name)
 
-<CreateFunctionStatement> ::= CREATE FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS <TypeNameQualified> <OptionalFunctionOption> AS <StatementBlock>
+<CreateOrAlterFunctionStatement> ::= CREATE FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS <TypeNameQualified> <OptionalFunctionOption> AS <StatementBlock>
     | CREATE FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS <TypeNameQualified> <OptionalFunctionOption> <StatementBlock>
     | CREATE FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS TABLE <OptionalFunctionOption> AS RETURN <FunctionInlineSelect>
     | CREATE FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS TABLE <OptionalFunctionOption> RETURN <FunctionInlineSelect>
@@ -806,7 +807,17 @@ _ACTION = '$ACTION'
     | CREATE FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS <TypeNameQualified> <OptionalFunctionOption> <ExternalName>
     | CREATE FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS TABLE <TableDefinitionGroup> <OptionalFunctionOption> AS <ExternalName>
     | CREATE FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS TABLE <TableDefinitionGroup> <OptionalFunctionOption> <ExternalName>
-
+    | ALTER FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS <TypeNameQualified> <OptionalFunctionOption> AS <StatementBlock>
+    | ALTER FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS <TypeNameQualified> <OptionalFunctionOption> <StatementBlock>
+    | ALTER FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS TABLE <OptionalFunctionOption> AS RETURN <FunctionInlineSelect>
+    | ALTER FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS TABLE <OptionalFunctionOption> RETURN <FunctionInlineSelect>
+    | ALTER FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS <VariableName> TABLE <TableDefinitionGroup> <OptionalFunctionOption> AS <StatementBlock>
+    | ALTER FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS <VariableName> TABLE <TableDefinitionGroup> <OptionalFunctionOption> <StatementBlock>
+    | ALTER FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS <TypeNameQualified> <OptionalFunctionOption> AS <ExternalName>
+    | ALTER FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS <TypeNameQualified> <OptionalFunctionOption> <ExternalName>
+    | ALTER FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS TABLE <TableDefinitionGroup> <OptionalFunctionOption> AS <ExternalName>
+    | ALTER FUNCTION <FunctionNameQualified> '(' <OptionalFunctionParameterList> ')' RETURNS TABLE <TableDefinitionGroup> <OptionalFunctionOption> <ExternalName>
+    
 <OptionalFunctionParameterList> ::= <FunctionParameterList>
     |
 
@@ -832,7 +843,7 @@ _ACTION = '$ACTION'
 ! CREATE/DROP PROCEDURE and EXECUTE
 ! =============================================================================
 
-<CreateProcedureStatement> ::= CREATE PROCEDURE <ProcedureNameQualified> <ProcedureParameterGroup> <ProcedureOptionGroup> <ProcedureFor> <AsObjectBody> 
+<CreateOrAlterProcedureStatement> ::= CREATE PROCEDURE <ProcedureNameQualified> <ProcedureParameterGroup> <ProcedureOptionGroup> <ProcedureFor> <AsObjectBody> 
     | ALTER PROCEDURE <ProcedureNameQualified> <ProcedureParameterGroup> <ProcedureOptionGroup> <ProcedureFor> <AsObjectBody> 
 
 <AsObjectBody> ::= AS <StatementList>
@@ -916,7 +927,8 @@ _ACTION = '$ACTION'
 ! CREATE/DROP VIEW
 ! =============================================================================
 
-<CreateViewStatement> ::= CREATE VIEW <ViewNameQualified> <ColumnNameGroup> <ViewOptionalAttribute> AS <SelectStatement> <ViewOptionalCheckOption>
+<CreateOrAlterViewStatement> ::= CREATE VIEW <ViewNameQualified> <ColumnNameGroup> <ViewOptionalAttribute> AS <SelectStatement> <ViewOptionalCheckOption>
+    | ALTER VIEW <ViewNameQualified> <ColumnNameGroup> <ViewOptionalAttribute> AS <SelectStatement> <ViewOptionalCheckOption>
 
 <ColumnNameGroup> ::= '(' <ColumnNameList> ')'
     |
