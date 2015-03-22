@@ -485,6 +485,9 @@ _ACTION = '$ACTION'
     | <DMLStatement> 
     | <PrgStatement> 
     | <Label>
+    | <DDLStatement> ';'
+    | <DMLStatement> ';'
+    | <PrgStatement> ';'
 
 <DDLStatement> ::= <CreateFulltextStatement>
     | <DropFulltextStatement>
@@ -1231,25 +1234,6 @@ _ACTION = '$ACTION'
 ! SELECT Statement
 ! =============================================================================
 
-<SelectStatement> ::= <QueryOptions> <SelectQuery> <QueryHint>
-
-<SelectQuery> ::= SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
-    | SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
-    | SELECT <Restriction> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
-    | SELECT <Restriction> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
-    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
-    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
-    | SELECT <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
-    | SELECT <ColumnItemList> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
-    | SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
-    | SELECT <Restriction> <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
-    | SELECT <Restriction> <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
-    | SELECT <Restriction> <ColumnItemList> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
-    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
-    | SELECT <TopLegacy> <ColumnItemList> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
-    | SELECT <ColumnItemList> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
-    | SELECT <ColumnItemList> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
-
 <TopLegacy> ::= TOP IntegerLiteral <OptionalPercent>
     | <Top>
 
@@ -1270,6 +1254,30 @@ _ACTION = '$ACTION'
     |
 
 <FromClause> ::= FROM <Source> <JoinChain>
+
+<SelectStatement> ::= <QueryOptions> <SelectQuery> <QueryHint>
+                   
+<SelectClause> ::= SELECT <Restriction> <TopLegacy> <ColumnItemList> 
+    | SELECT <Restriction> <ColumnItemList> 
+    | SELECT <TopLegacy> <ColumnItemList>
+    | SELECT <ColumnItemList>
+
+<SelectQuery> ::= <SelectClause> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
+    | <SelectClause> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <RowsetCombineClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <FromClause> <WhereClause> <GroupClause> <HavingClause> <OptionalOrderClause> <ForClause> <ComputeClause>
+    | <SelectClause> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
+    | <SelectClause> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <WhereClause> <RowsetCombineClause> <ComputeClause>
+!   | <SelectClause> <IntoClause> <WhereClause> <ForClause> <ComputeClause>
 
 <Source> ::= <SourceRowset>
     | '(' <Source> <JoinChain> ')'
